@@ -3,16 +3,26 @@
 My journey to understanding how Zig interacts with C and how I, someone not 
 well-versed in C, can leverage the power of third-party C libraries.
 
-This journey will include the following:
+## What This Doesn't Cover
 
+- Using Zig in C
+- Using C
+- C at all
+
+## TOC
+
+[The Journey](#the-journey)
 - [Create a Simple C application](#create-a-simple-c-application)
 - [Compiling the application using `zig cc`](#compiling-the-application-using-zig-cc)
 - [Leverage Zig's build system to build the C application](#leverage-zigs-build-system-to-build-the-c-application)
 - [Create a Zig application that links to the C library](#create-a-zig-application-that-links-to-the-c-library)
 - [Create a Zig wrapper around a C Function](#create-a-zig-wrapper-around-a-c-function)
-- [Create a Zig binding for the C library](#create-a-zig-binding-for-the-c-library)
+- [Using Zig to build a C Library](#using-zig-to-build-a-c-library)
+- [Linking a Zig application to a Pre-built C Library](#linking-a-zig-application-to-a-pre-built-c-library)
 
-- [Testing C code in Zig???](#)
+[Side Quests](#side-quests)
+- [Testing C code in Zig](#testing-c-code-in-zig)
+
 
 ## The Journey
 ### Create a Simple C Application
@@ -268,12 +278,13 @@ You can see, we use `@import("zmath.zig")` to import our wrapper functions. Then
 we use it just as you'd expect. Lastly, we have to update our `build.zig` file 
 to account for these changes.
 
-Our `build.zig` file is the same as last time. We still need to link the C code, 
-which is annoying and doesn't reflect how you might link C to Zig in "real-world" 
-situations, such as only has a library file. We'll cover linking C library files 
-in Zig, but first we'll build our library using Zig's build system.
+Our `build.zig` file is the same as last time. We link our source codes directly, 
+but what if the situation occurs where you have a library file you intend/to use 
+instead? Linking to a library file in Zig is simple, but first we need to create 
+our library files. I'll next cover creating static and shared libraries, using 
+our `zmath` C library.
 
-### Using Zig to build your C Library
+### Using Zig to build a C Library
 
 We'll use our `zmath` library we wrote in C and build it into a shared libary so 
 that we can dynamically link to rather than needing to include the source code 
@@ -284,10 +295,40 @@ Let's write out `build.zig` file:
 
 `build.zig`
 ```zig
-c
+const std = @import("std");
+
+pub fn build(b: *std.Build) *std.Build.Step.Compile {
+    const target = b.standardTargetOptions(.{});
+    const optimize = b.standardOptimizeOption(.{});
+
+    const lib = b.addStaticLibrary(.{
+        .name = "c_static_library_with_zig_build",
+        .target = target,
+        .optimize = optimize,
+    });
+
+    lib.addIncludePath(b.path("include"));
+    lib.addCSourceFiles(.{ .files = &[_][]const u8{"src/zmath.c"} });
+
+    lib.linkLibC();
+
+    b.installArtifact(lib);
+}
 ```
 
-###
+Again, very simple example. We add our source files, include directory, link it 
+to libc and install it. When we run `zig build`, our library will be compiled to 
+a static library file, `zig-out/lib/c_static_library_with_zig_build.lib`.
 
-## Bonus!
+If you want to compile shared libraries instead, there's not much difference. 
+Instead of `b.addStaticLibrary()`, use `b.addSharedLibrary()`.
+
+### Linking a Zig application to a Pre-built C Library 
+
+
+
+## Side Quests
+
+Some extra thoughts I have about integrating Zig and C together.
+
 ### Testing C code in Zig

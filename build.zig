@@ -3,7 +3,8 @@ const std = @import("std");
 const module_ex1 = @import("build_c_application_with_zig_build.zig");
 const module_ex2 = @import("build_zig_linked_to_c.zig");
 const module_ex3 = @import("build_zig_c_wrapper.zig");
-const module_ex4 = @import("build_c_library_with_zig_build.zig");
+const module_ex4 = @import("build_c_static_library_with_zig_build.zig");
+const module_ex5 = @import("build_c_shared_library_with_zig_build.zig");
 
 pub fn build(b: *std.Build) void {
     const target = b.standardTargetOptions(.{});
@@ -38,10 +39,10 @@ pub fn build(b: *std.Build) void {
 
     // ex4
     const ex4 = module_ex4.build(b, target, optimize);
-    const run_ex4 = b.addRunArtifact(ex4);
+    const install_ex4 = b.addInstallArtifact(ex4, .{});
 
     b.installArtifact(ex4);
 
-    const run_ex4_step = b.step("ex4", "Create a shared library file from C source code.");
-    run_ex4_step.dependOn(&run_ex4.step);
+    const install_ex4_step = b.step("ex4", "Create a shared library file from C source code.");
+    install_ex4_step.dependOn(&install_ex4.step);
 }
