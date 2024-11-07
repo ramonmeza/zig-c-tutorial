@@ -8,7 +8,6 @@ pub fn build(b: *std.Build, target: std.Build.ResolvedTarget, optimize: std.buil
         .optimize = optimize,
     });
 
-    // exe.addObjectFile(b.path("zig-out/bin/zmath-shared.dll"));
     exe.addObjectFile(b.path("zig-out/lib/zmath-shared.lib"));
 
     return exe;
