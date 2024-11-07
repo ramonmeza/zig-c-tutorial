@@ -20,6 +20,7 @@ well-versed in C, can leverage the power of third-party C libraries.
     - [Create a Zig application that links to the C library](#create-a-zig-application-that-links-to-the-c-library)
     - [Using Zig to build a C Library](#using-zig-to-build-a-c-library)
     - [Create a Zig wrapper around a C Function](#create-a-zig-wrapper-around-a-c-function)
+    - [Linking to the Static/Shared Library](#linking-to-the-staticshared-library)
 - [Side Quests](#side-quests)
     - [Testing C code in Zig](#testing-c-code-in-zig)
 - [Resources](#resources)
@@ -296,11 +297,6 @@ Instead of `b.addStaticLibrary()`, use `b.addSharedLibrary()`.
 
 _[See the difference in build.zig](build_c_shared_lib.zig)_
 
-It would be wise to note that here we build our library and then import it from 
-a path. If you build from source, use `linkLibrary(*Compile)` rather than 
-`linkLibrary2()`, as Zig will compile faster than your OS can save the library 
-file, causing it not to be found during build time.
-
 ### Create a Zig wrapper around a C Function
 
 This is a simple example, so wrapping the C function in Zig may be overkill. 
@@ -371,7 +367,36 @@ pub fn main() !void {
 }
 ```
 
-You should be able to use the same `build.zig` file as before to run this.
+### Linking to the Static/Shared Library
+
+With this in place, and our static/shared library created, we can use `build.zig` 
+to link our application to our library.
+
+[`build.zig` for static libray](build_zig_app_static.zig)
+```c
+const std = @import("std");
+
+pub fn build(b: *std.Build, target: std.Build.ResolvedTarget, optimize: std.builtin.OptimizeMode) *std.Build.Step.Compile {
+    const exe = b.addExecutable(.{
+        .name = "zig_app_shared",
+        .root_source_file = b.path("src/zig_c_wrapper.zig"),
+        .target = target,
+        .optimize = optimize,
+    });
+
+    exe.addObjectFile(b.path("zig-out/lib/zmath-shared.lib"));
+
+    return exe;
+}
+```
+
+It would be wise to note that here we built our library and then import it from 
+a path (using `addObjectFile()`). If you build from source, use `addObject(*Compile)` 
+instead and pass in the proper object. This is because Zig will compile faster 
+than your OS can save the library file, causing the build to fail because the 
+library file could not be found during the build time of this object (at least 
+when using `dependsOn()`, like I do in my main [`build.zig`](build.zig) file 
+for this repo).
 
 
 ## Side Quests
