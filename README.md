@@ -20,7 +20,6 @@ well-versed in C, can leverage the power of third-party C libraries.
     - [Create a Zig application that links to the C library](#create-a-zig-application-that-links-to-the-c-library)
     - [Create a Zig wrapper around a C Function](#create-a-zig-wrapper-around-a-c-function)
     - [Using Zig to build a C Library](#using-zig-to-build-a-c-library)
-    - [Linking a Zig application to a Pre-built C Library](#linking-a-zig-application-to-a-pre-built-c-library)
 - [Side Quests](#side-quests)
     - [Testing C code in Zig](#testing-c-code-in-zig)
 - [Resources](#resources)
