@@ -311,14 +311,14 @@ For this we'll create a new Zig file, `zmath_ext.zig`
 ```c
 const zmath_h = @cImport(@cInclude("zmath.h"));
 
-pub extern fn add(a: c_int, b: c_int) c_int;
-pub extern fn sub(a: c_int, b: c_int) c_int;
+pub extern fn add(a: c_int, b: c_int) callconv(.C) c_int;
+pub extern fn sub(a: c_int, b: c_int) callconv(.C) c_int;
 ```
 
-This file is a declaration of external functions we wish to use Zig. We'll next 
-create a `zmath.zig`, in which we will create Zig functions that will expose 
-Zig data types through our API and cast the parameters to their corresponding C 
-data types before calling the C functions.
+This file is a declaration of external functions we wish to use in Zig. We'll 
+next create a `zmath.zig`, in which we will create Zig functions that will 
+expose Zig data types through our API and cast the parameters to their 
+corresponding C data types before calling the C functions.
 
 [`zmath.zig`](src/zmath.zig)
 ```c
@@ -338,7 +338,7 @@ pub fn sub(a: i32, b: i32) !i32 {
 ```
 
 As you can see, we translate the C types to Zig specific types for use in Zig 
-applications. WE cast our input parameters to their C equivalent (`c_int`) for 
+applications. We cast our input parameters to their C equivalent (`c_int`) for 
 the C function's parameters. You'll also notice the return type contains `!`, 
 meaning these functions will now return errors. This means within our 
 application, we'll need to call the function with `try`.
@@ -457,9 +457,10 @@ pub fn build(b: *std.Build) void {
 - https://mtlynch.io/notes/zig-call-c-simple/
 What initially made me want to tackle this subject, this article is a great 
 starting point for understanding C and Zig.
-
 - [Wikipedia article for "Shared Library"](https://en.wikipedia.org/wiki/Shared_library)
 - [Wikipedia article for "Static Library"](https://en.wikipedia.org/wiki/Static_library)
+- [Discussion about this repository on Ziggit](https://ziggit.dev/t/blog-understanding-how-zig-and-c-interact/6733/7)
+
 
 
 ## Thanks
