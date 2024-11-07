@@ -1,7 +1,7 @@
 # Understanding How Zig and C Interact
 
-My journey to understanding how Zig interacts with C and how I, someone not 
-well-versed in C, can leverage the power of third-party C libraries.
+A journey to understanding how Zig interacts with C and how someone not 
+well-versed in C can leverage the power of third-party C libraries.
 
 ## What This Doesn't Cover
 
@@ -71,7 +71,7 @@ int sub(int a, int b) {
 
 ```
 
-Next I created a simple application to utilize this library.
+Next we create a simple application to utilize this library.
 
 [`c_app.c`](src/c_app.c)
 ```c
@@ -197,7 +197,7 @@ Same results as compiling with `zig cc`! Very cool. Let's move on to using a bit
 
 ### Create a Zig application that links to the C library
 
-Basically, I want to recreate my `c_app.c` in Zig. In this case, this is trivial.
+Basically, we want to recreate `c_app.c` in Zig. In this case, this is trivial.
 
 [`zig_app.zig`](src/zig_app.zig)
 ```c
@@ -258,7 +258,7 @@ using a C library (when source code is available).
 
 ### Using Zig to build a C Library
 
-Up until now, I've been utilizing the C source code, since it's available to us, 
+Up until now, we've been utilizing the C source code, since it's available to us, 
 but this is not always the case. Sometimes we may have a static or shared library 
 that we need to link against, rather than compiling the source code ourselves. 
  
@@ -305,7 +305,7 @@ have a Zig interface between our application code and our C code. This allows us
 to handle errors in a Zig fashion and pass proper types to the C code while 
 exposing them to the application code.
 
-For this I'll create a new Zig file, `zmath_ext.zig`
+For this we'll create a new Zig file, `zmath_ext.zig`
 
 [`zmath_ext.zig`](src/zmath_ext.zig)
 ```c
@@ -343,7 +343,7 @@ the C function's parameters. You'll also notice the return type contains `!`,
 meaning these functions will now return errors. This means within our 
 application, we'll need to call the function with `try`.
 
-I'll create a new zig file for trying out the wrapper functions, called 
+We'll create a new zig file for trying out the wrapper functions, called 
 `zig_c_wrapper.zig`. This is mostly to distinguish between our previous examples, 
 but this is just showing we no longer use `@cImport()` directly, and instead 
 utilize `zmath.zig` (our wrapper functions), to interact with the C code.
@@ -395,13 +395,13 @@ a path (using `addObjectFile()`). If you build from source, use `addObject(*Comp
 instead and pass in the proper object. This is because Zig will compile faster 
 than your OS can save the library file, causing the build to fail because the 
 library file could not be found during the build time of this object (at least 
-when using `dependsOn()`, like I do in my main [`build.zig`](build.zig) file 
+when using `dependsOn()`, like we do in the main [`build.zig`](build.zig) file 
 for this repo).
 
 
 ## Side Quests
 
-Some extra thoughts I have about integrating Zig and C together.
+Some extra thoughts about working with Zig and intergrating/interacting with C.
 
 ### Testing C code in Zig
 
@@ -427,7 +427,7 @@ test "zmath.sub() works" {
 ```
 _Strive to write good tests, this is just a proof of concept._
 
-`build.zig`
+[`build.zig`](build_test_zmath.zig)
 ```c
 const std = @import("std");
 
