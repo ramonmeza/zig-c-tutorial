@@ -5,6 +5,8 @@ const module_ex2 = @import("build_zig_linked_to_c.zig");
 const module_ex3 = @import("build_zig_c_wrapper.zig");
 const module_ex4 = @import("build_c_static_library_with_zig_build.zig");
 const module_ex5 = @import("build_c_shared_library_with_zig_build.zig");
+// const module_ex6 = @import("build_zig_linked_to_c_static_lib.zig");
+// const module_ex7 = @import("build_zig_linked_to_c_shared_lib.zig");
 
 pub fn build(b: *std.Build) void {
     const target = b.standardTargetOptions(.{});
@@ -45,4 +47,31 @@ pub fn build(b: *std.Build) void {
 
     const install_ex4_step = b.step("ex4", "Create a shared library file from C source code.");
     install_ex4_step.dependOn(&install_ex4.step);
+
+    // ex5
+    const ex5 = module_ex5.build(b, target, optimize);
+    const install_ex5 = b.addInstallArtifact(ex5, .{});
+
+    b.installArtifact(ex5);
+
+    const install_ex5_step = b.step("ex5", "Create a static library file from C source code.");
+    install_ex5_step.dependOn(&install_ex5.step);
+
+    // ex6
+    // const ex6 = module_ex6.build(b, target, optimize);
+    // const run_ex6 = b.addInstallArtifact(ex6, .{});
+
+    // b.installArtifact(ex6);
+
+    // const run_ex6_step = b.step("ex6", "Run a Zig application that is statically linked to a C library.");
+    // run_ex6_step.dependOn(&run_ex6.step);
+
+    // ex7
+    // const ex7 = module_ex7.build(b, target, optimize);
+    // const run_ex7 = b.addInstallArtifact(ex7, .{});
+
+    // b.installArtifact(ex7);
+
+    // const run_ex7_step = b.step("ex7", "Run a Zig application that is dynamically linked to a C library.");
+    // run_ex7_step.dependOn(&run_ex7.step);
 }

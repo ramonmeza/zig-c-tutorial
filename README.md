@@ -30,14 +30,14 @@ well-versed in C, can leverage the power of third-party C libraries.
 This should be straight-forward. I will create a simple math library in C, with 
 functions defined in a header file and implemented in the source file.
 
-[`zmath.h`](include/zmath.h)
-```
+`zmath.h`
+```c
 int add(int a, int b);
 int sub(int a, int b);
 ```
 
-[`zmath.c`](src/zmath.c)
-```
+`zmath.c`
+```c
 #include "zmath.h"
 
 int add(int a, int b) {
@@ -51,8 +51,8 @@ int sub(int a, int b) {
 
 Next I created a simple application to utilize this library.
 
-[`main.c`](src/main.c)
-```
+`main.c`
+```c
 #include <stdio.h>
 #include "zmath.h"
 
@@ -72,7 +72,7 @@ int main(void) {
 
 ### Compiling the application using `zig cc`
 
-If you're familiar with gcc, this is no problem. Here's the command to compile 
+If you're familiar with `gcc`, this is no problem. Here's the command to compile 
 this application:
 
 ```sh
@@ -92,8 +92,8 @@ Now run the resulting executable:
 
 Now we can create a file called `build.zig`, which Zig will use to build our application.
 
-[`build.zig`](build_c_compiled_with_zig_build.zig)
-```zig
+`build.zig`
+```c
 const std = @import("std");
 
 pub fn build(b: *std.Build) void {
@@ -125,7 +125,7 @@ Things to note:
 - `exe.addIncludePath()` takes a `LazyPath`, and it just so happens that `std.Build` (the type of `b`) contains a function to provide a `LazyPath` object given a string.
 - `exe.addCSourceFiles()` takes a `struct` that includes a `files` property. This property is a pointer to an array of strings. I'll break down `&[_][]const u8 {}` real quick in plain English:
 
-```zig
+```c
 &[_][]const u8 {
     "..",
     "...",
@@ -143,6 +143,7 @@ Things to note:
 // a reference to an automatically sized array of array of constants u8 objects.
 // a pointer to the address in memory where an array of arrays of u8 exists
 ```
+
 _Probably overkill of an explanation, but maybe someone will benefit from this._
 
 - Next is `exe.linkLibC()`. This is the extremely convenient way that Zig links to libc. There's also `linkLibCpp()`, which could be useful to keep in mind. If you use a standard library, such as `stdio.h`, make sure to include `linkLibC()`, otherwise you'll get a compilation error when trying to build.
@@ -154,6 +155,7 @@ zig build
 ```
 
 And run the resulting executable:
+
 ```sh
 ./zig-out/bin/c_compiled_with_zig_build.exe
 10 + 5 = 15
@@ -166,8 +168,8 @@ Same results as compiling with `zig cc`! Very cool. Let's move on to using a bit
 
 Basically, I want to recreate my `main.c` in Zig. In this case, this is trivial.
 
-[`main.zig`](src/zig_linked_to_c.zig)
-```zig
+`main.zig`
+```c
 const std = @import("std");
 const zmath = @cImport(@cInclude("zmath.h"));
 
@@ -189,8 +191,8 @@ Fairly simple to understand. The only gotcha is using printing the output. Next
 we have to modify `build.zig` and point it to our `main.zig` file 
 instead of `main.c`.
 
-[`build.zig`](build_zig_linked_to_c.zig)
-```zig
+`build.zig`
+```c
 const std = @import("std");
 
 pub fn build(b: *std.Build) void {
@@ -231,7 +233,7 @@ exposing them to the application code.
 For this I'll create a new Zig file, `zmath.zig`
 
 `zmath.zig`
-```zig
+```c
 const zmath = @cImport(@cInclude("zmath.h"));
 
 pub fn add(a: i32, b: i32) !i32 {
@@ -256,7 +258,7 @@ call the function with `try`.
 Let's update our `main.zig` file now
 
 `main.zig`
-```zig
+```c
 const std = @import("std");
 const zmath = @import("zmath.zig");
 
@@ -294,7 +296,7 @@ distributed code.
 Let's write out `build.zig` file:
 
 `build.zig`
-```zig
+```c
 const std = @import("std");
 
 pub fn build(b: *std.Build) *std.Build.Step.Compile {
@@ -325,6 +327,19 @@ Instead of `b.addStaticLibrary()`, use `b.addSharedLibrary()`.
 
 ### Linking a Zig application to a Pre-built C Library 
 
+Assuming you followed along, you'll have some library files we'll link our 
+Zig application to directly, rather than including the source files in our build 
+code.
+
+`main.zig`
+```c
+
+```
+
+`build.zig`
+```c
+
+```
 
 
 ## Side Quests
