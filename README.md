@@ -18,11 +18,12 @@ well-versed in C, can leverage the power of third-party C libraries.
     - [Compiling the application using `zig cc`](#compiling-the-application-using-zig-cc)
     - [Leverage Zig's build system to build the C application](#leverage-zigs-build-system-to-build-the-c-application)
     - [Create a Zig application that links to the C library](#create-a-zig-application-that-links-to-the-c-library)
-    - [Create a Zig wrapper around a C Function](#create-a-zig-wrapper-around-a-c-function)
     - [Using Zig to build a C Library](#using-zig-to-build-a-c-library)
+    - [Create a Zig wrapper around a C Function](#create-a-zig-wrapper-around-a-c-function)
 - [Side Quests](#side-quests)
     - [Testing C code in Zig](#testing-c-code-in-zig)
 - [Resources](#resources)
+- [Thanks](#thanks)
 
 ## Utilizing this Project
 
