@@ -1,0 +1,47 @@
+const std = @import("std");
+
+const module_ex1 = @import("build_c_application_with_zig_build.zig");
+const module_ex2 = @import("build_zig_linked_to_c.zig");
+const module_ex3 = @import("build_zig_c_wrapper.zig");
+const module_ex4 = @import("build_c_library_with_zig_build.zig");
+
+pub fn build(b: *std.Build) void {
+    const target = b.standardTargetOptions(.{});
+    const optimize = b.standardOptimizeOption(.{});
+
+    // ex1
+    const ex1 = module_ex1.build(b, target, optimize);
+    const run_ex1 = b.addRunArtifact(ex1);
+
+    b.installArtifact(ex1);
+
+    const run_ex1_step = b.step("ex1", "Run a C application build with Zig's build system.");
+    run_ex1_step.dependOn(&run_ex1.step);
+
+    // ex2
+    const ex2 = module_ex2.build(b, target, optimize);
+    const run_ex2 = b.addRunArtifact(ex2);
+
+    b.installArtifact(ex2);
+
+    const run_ex2_step = b.step("ex2", "Run a Zig application linked to C source code.");
+    run_ex2_step.dependOn(&run_ex2.step);
+
+    // ex3
+    const ex3 = module_ex3.build(b, target, optimize);
+    const run_ex3 = b.addRunArtifact(ex3);
+
+    b.installArtifact(ex3);
+
+    const run_ex3_step = b.step("ex3", "Run a Zig application with an abstraction layer between the C source code.");
+    run_ex3_step.dependOn(&run_ex3.step);
+
+    // ex4
+    const ex4 = module_ex4.build(b, target, optimize);
+    const run_ex4 = b.addRunArtifact(ex4);
+
+    b.installArtifact(ex4);
+
+    const run_ex4_step = b.step("ex4", "Create a shared library file from C source code.");
+    run_ex4_step.dependOn(&run_ex4.step);
+}
