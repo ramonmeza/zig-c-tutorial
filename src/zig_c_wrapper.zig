@@ -8,8 +8,8 @@ pub fn main() !void {
     const b = 5;
 
     const resultAdd = try zmath.add(a, b);
-    try stdio.print("{} + {} = {}\n", .{ a, b, resultAdd });
+    try stdio.print("{d} + {d} = {d}\n", .{ a, b, resultAdd });
 
     const resultSub = try zmath.sub(a, b);
-    try stdio.print("{} - {} = {}\n", .{ a, b, resultSub });
+    try stdio.print("{d} - {d} = {d}\n", .{ a, b, resultSub });
 }

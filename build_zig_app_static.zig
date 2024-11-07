@@ -2,15 +2,13 @@ const std = @import("std");
 
 pub fn build(b: *std.Build, target: std.Build.ResolvedTarget, optimize: std.builtin.OptimizeMode) *std.Build.Step.Compile {
     const exe = b.addExecutable(.{
-        .name = "c_application_with_zig_build",
+        .name = "zig_app_static",
+        .root_source_file = b.path("src/zig_c_wrapper.zig"),
         .target = target,
         .optimize = optimize,
     });
 
-    exe.addIncludePath(b.path("include"));
-    exe.addCSourceFiles(.{ .files = &[_][]const u8{ "src/main.c", "src/zmath.c" } });
-
-    exe.linkLibC();
+    exe.addObjectFile(b.path("zig-out/lib/zmath-static.lib"));
 
     return exe;
 }

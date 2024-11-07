@@ -11,18 +11,36 @@ well-versed in C, can leverage the power of third-party C libraries.
 
 ## TOC
 
-[The Journey](#the-journey)
-- [Create a Simple C application](#create-a-simple-c-application)
-- [Compiling the application using `zig cc`](#compiling-the-application-using-zig-cc)
-- [Leverage Zig's build system to build the C application](#leverage-zigs-build-system-to-build-the-c-application)
-- [Create a Zig application that links to the C library](#create-a-zig-application-that-links-to-the-c-library)
-- [Create a Zig wrapper around a C Function](#create-a-zig-wrapper-around-a-c-function)
-- [Using Zig to build a C Library](#using-zig-to-build-a-c-library)
-- [Linking a Zig application to a Pre-built C Library](#linking-a-zig-application-to-a-pre-built-c-library)
+- [Utilizing This Project](#utilizing-this-project)
+    - [Zig Build Commands](#zig-build-commands)
+- [The Journey](#the-journey)
+    - [Create a Simple C application](#create-a-simple-c-application)
+    - [Compiling the application using `zig cc`](#compiling-the-application-using-zig-cc)
+    - [Leverage Zig's build system to build the C application](#leverage-zigs-build-system-to-build-the-c-application)
+    - [Create a Zig application that links to the C library](#create-a-zig-application-that-links-to-the-c-library)
+    - [Create a Zig wrapper around a C Function](#create-a-zig-wrapper-around-a-c-function)
+    - [Using Zig to build a C Library](#using-zig-to-build-a-c-library)
+    - [Linking a Zig application to a Pre-built C Library](#linking-a-zig-application-to-a-pre-built-c-library)
+- [Side Quests](#side-quests)
+    - [Testing C code in Zig](#testing-c-code-in-zig)
+- [Resources](#resources)
 
-[Side Quests](#side-quests)
-- [Testing C code in Zig](#testing-c-code-in-zig)
+## Utilizing this Project
 
+### Zig Build Commands
+```sh
+zig build [steps] [options]
+
+Steps:
+  install (default)            Copy build artifacts to prefix path
+  uninstall                    Remove build artifacts from prefix path
+  c_app                        Run a C application build with Zig's build system.
+  zig_app                      Run a Zig application linked to C source code.
+  lib_static                   Create a static library from C source code.
+  lib_shared                   Create a shared library from C source code.
+  zig_app_shared               Run a Zig application that is linked to a shared library.
+  zig_app_static               Run a Zig application that is linked to a static library.
+```
 
 ## The Journey
 ### Create a Simple C Application
@@ -288,6 +306,11 @@ our `zmath` C library.
 
 ### Using Zig to build a C Library
 
+When I say a C library, I mean a static or shared library. A static library contains 
+a single file, for me thats a `.lib` file. Shared libraries, on the other hand, 
+contain `.lib` files and `.dll` files. Basically more stuff to link to. If you 
+want to dig deeper on static and shared libraries, check the [Resources](#resources) section
+
 We'll use our `zmath` library we wrote in C and build it into a shared libary so 
 that we can dynamically link to rather than needing to include the source code 
 during build time. Basically, this is the situation you'll be in when using 
@@ -347,3 +370,11 @@ code.
 Some extra thoughts I have about integrating Zig and C together.
 
 ### Testing C code in Zig
+
+## Resources
+- https://mtlynch.io/notes/zig-call-c-simple/
+What initially made me want to tackle this subject, this article is a great 
+starting point for understanding C and Zig.
+
+- [Wikipedia article for "Shared Library"](https://en.wikipedia.org/wiki/Shared_library)
+- [Wikipedia article for "Static Library"](https://en.wikipedia.org/wiki/Static_library)

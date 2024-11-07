@@ -1,8 +1,8 @@
 const std = @import("std");
 
 pub fn build(b: *std.Build, target: std.Build.ResolvedTarget, optimize: std.builtin.OptimizeMode) *std.Build.Step.Compile {
-    const lib = b.addStaticLibrary(.{
-        .name = "c_static_library_with_zig_build",
+    const lib = b.addSharedLibrary(.{
+        .name = "zmath-shared",
         .target = target,
         .optimize = optimize,
     });
